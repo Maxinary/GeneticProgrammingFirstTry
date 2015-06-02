@@ -1,7 +1,7 @@
 from math import log
 
 def checkfit(funclist):
-	testcases = [[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]]
+	testcases = [[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],[11,11]]
 	fitness = []
 
 	for i in len(funclist):
@@ -34,6 +34,8 @@ def interpret_block(simple_lisp):
 		m = simple_lisp[3:end_m+4]
 		n = simple_lisp[end_m+5:-1]
 
+		print(m,n)
+
 		if m[0] == "(":
 			m = interpret_block(m)
 		if n[0] == "(":
@@ -57,12 +59,16 @@ def interpret_block(simple_lisp):
 	return "Err:Unbalanced Parentheses"
 
 def get_end_of_block(simple_lisp):
-	parenthesis = 0
-	for i in range(len(simple_lisp)):
-		if simple_lisp[i] == '(':
-			parenthesis += 1
-		if simple_lisp[i] == ')':
-			parenthesis -= 1
+	if simple_lisp[0] == "(":
+		parenthesis = 0
+		for i in range(len(simple_lisp)):
+			if simple_lisp[i] == '(':
+				parenthesis += 1
+			if simple_lisp[i] == ')':
+				parenthesis -= 1
 
-		if parenthesis == 0:
-			return i
+			if parenthesis == 0:
+				return i
+	else:
+		print("Tru")
+		return simple_lisp.find(" ")-1
