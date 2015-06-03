@@ -1,23 +1,5 @@
 from math import log
 
-def checkfit(funclist):
-	testcases = [[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],[11,11]]
-	fitness = []
-
-	for i in len(funclist):
-		fitness.append(0)
-		for j in testcases:
-			fitness[i] += abs(funclist[i](j[0]) - j[1])
-	return fitness
-
-def reap(funclist, fitlist):
-	#cuts population in half
-	pass
-
-def mutate(funclist):
-	#doubles population
-	pass
-
 def interpret_block(simple_lisp):
 	'''interprets one branch of very simple lisp variation I made
 		(+ m n) adds two items
@@ -33,8 +15,6 @@ def interpret_block(simple_lisp):
 		end_m = get_end_of_block(simple_lisp[3:])
 		m = simple_lisp[3:end_m+4]
 		n = simple_lisp[end_m+5:-1]
-
-		print(m,n)
 
 		if m[0] == "(":
 			m = interpret_block(m)
@@ -70,5 +50,7 @@ def get_end_of_block(simple_lisp):
 			if parenthesis == 0:
 				return i
 	else:
-		print("Tru")
 		return simple_lisp.find(" ")-1
+
+if __name__ == "__main__":
+	print(interpret_block(raw_input("> ")))
