@@ -1,29 +1,32 @@
 from math import log
 
-def interpret_block(simple_lisp):
+def interpret_block(simple_lisp, variables = {}):
 	'''interprets one branch of very simple lisp variation I made
 		(+ m n) adds two items
 			did not add in subtraction because it will more easily represented as adding a neg number
 		(* m n) multiplies
 		(/ m n) divides
 			left division in because I want to work with integers for the time being
-		(x m n) does m to the power of n
+		(^ m n) does m to the power of n
 		(l m n) does log m base n
 	'''
+	for key in variables:
+		simple_lisp = simple_lisp.replace(key, str(variables[key]))
 	if simple_lisp.count("(") == simple_lisp.count(")"):
-		
+		try:
+			simple_lisp = float(simple_lisp)
+			return simple_lisp
+		except ValueError:
+			pass
+
 		end_m = get_end_of_block(simple_lisp[3:])
 		m = simple_lisp[3:end_m+4]
 		n = simple_lisp[end_m+5:-1]
 
-		if m[0] == "(":
-			m = interpret_block(m)
-		if n[0] == "(":
-			n = interpret_block(n)
+		m = interpret_block(m)
+		n = interpret_block(n)
 
 		if simple_lisp[1] in ['+', '*', '/', '^', 'l']:
-			m = float(m)
-			n = float(n)
 			if simple_lisp[1]== '+':
 				return m + n
 			elif simple_lisp[1]== '*':
@@ -53,4 +56,4 @@ def get_end_of_block(simple_lisp):
 		return simple_lisp.find(" ")-1
 
 if __name__ == "__main__":
-	print(interpret_block(raw_input("> ")))
+	print(interpret_block(raw_input("> "), {"x":5}))
