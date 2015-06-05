@@ -44,8 +44,7 @@ class Ecosystem():
 
 				end_m = lispish.get_end_of_block(block[3:])
 				m = block[3:end_m+4]
-				end_n = lispish.get_end_of_block(block[end_m+4:])
-				n = block[end_m+3:end_m+3+end_n]
+				n = block[end_m+5:-1]
 
 				decision = randint(0,2)
 
@@ -73,7 +72,8 @@ class Ecosystem():
 
 	def reap(self):
 		#removes least fit half
-		pass
+		for i in range(len(self.population)):
+			pass
 
 	def update_fit(self):
 		for i in self.population:
@@ -112,5 +112,4 @@ if __name__ == "__main__":
 		a.mutate()
 		for x in a.population:
 			print x.lispish
-	while 1:
 		
