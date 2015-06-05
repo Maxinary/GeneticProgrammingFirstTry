@@ -1,6 +1,7 @@
 import lispish
 import re
 from random import randint, choice
+from sys import exit
 
 def find_nth_char(haystack, needle, n):
 	count = 0
@@ -72,14 +73,31 @@ class Ecosystem():
 
 	def reap(self):
 		#removes least fit half
-		for i in range(len(self.population)):
-			pass
+		self.update_fit()
+		errors = 0
+		newpop = self.population
+		for i in newpop:
+			#print i.lispish,",", i.fitness
+			if i.fitness == "e":
+				try:
+					self.population.remove(i)
+					errors += 1
+				except ValueError:
+					pass
+
+		self.population.sort(key=lambda x: x.fitness, reverse=True)
+		for i in range(len(self.population) - (len(self.population) + errors)/2):
+			self.population.remove(self.population[i])
 
 	def update_fit(self):
-		for i in self.population:
+		for i in range(len(self.population)):
 			self.population[i].fitness = 0
-			for j in self.testcases:
-				self.population[i].fitness += abs(funclist[i](j[0]) - j[1])
+			try:
+				for j in self.testcases:
+					self.population[i].fitness += abs(lispish.interpret_block(self.population[i].lispish, {"x":j[0]}) - j[1])
+				self.population[i].fitness += 4*len(self.population[i].lispish)
+			except Exception, e:
+				self.population[i].fitness = "e"
 
 	def create_branch(self, full, inblock):
 		#creates branch
@@ -93,7 +111,7 @@ class Ecosystem():
 	def alter_num(self,full):
 		#changes number
 		nums = re.findall("-?\d+",full)
-		chosen = choice(nums+["-123456"])
+		chosen = choice(nums+["0"])
 		new = str(int(chosen)+randint(-5,5))
 		full = full.replace(chosen,new,1)
 		full = re.sub("-+", "-", full)
@@ -105,11 +123,21 @@ class Organism():
 		self.fitness = 0
 
 if __name__ == "__main__":
-	a = Ecosystem(0, [[1,1]])
+	a = Ecosystem(0, [[1,1], [2,4], [3,9], [4,16], [5,25]])
 	print [x.lispish for x in a.population]
-	for k in range(0,5):
+	for k in range(0,4):
 		print "\n\n"
 		a.mutate()
 		for x in a.population:
 			print x.lispish
-		
+	print "\n\n"
+	while 1:
+		try:
+			a.reap()
+			a.mutate()
+			print "Average:",sum([x.fitness for x in a.population])/len(a.population)
+		except KeyboardInterrupt:
+			for i in a.population:
+				print i.lispish
+			
+			exit()
