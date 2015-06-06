@@ -2,6 +2,8 @@ import lispish
 import re
 from random import randint, choice
 from sys import exit
+import matplotlib.pyplot as plt
+import numpy as np
 
 def find_nth_char(haystack, needle, n):
 	count = 0
@@ -134,14 +136,19 @@ class Organism():
 		self.fitness = 0
 
 if __name__ == "__main__":
-	a = Ecosystem(6, [[x,(x/2)**2] for x in range(0,10)])
-	while 1:
-		try:
+	a = Ecosystem(6, [[x,(x-2)**2] for x in range(0,10)])
+	try:
+		while 1:
 			a.reap()
 			a.mutate()
 			print "Winning:",a.win.lispish
 			print "Fitness:",a.win.fitness
 			print "Iterations:",a.iterations
-		except KeyboardInterrupt:
-			print "\n","Iterations:",a.iterations
-			exit()
+	except KeyboardInterrupt:
+		try:
+			xvals = [x[0] for x in a.testcases]
+			yvals = [x[1] for x in a.testcases]
+			plt.plot(xvals, [lispish.interpret_block(a.win.lispish, {"x":i}) for i in xvals], 'b', xvals, yvals, "g^")
+			plt.show()
+		except Exception, e:
+			print "\nCould not display graph"
