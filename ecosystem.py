@@ -6,7 +6,6 @@ from os import environ
 try:
 	if environ["DISPLAY"] is not None:
 		from matplotlib.pyplot import plot,show
-		import numpy as np
 except KeyError:
 	pass
 def find_nth_char(haystack, needle, n):
