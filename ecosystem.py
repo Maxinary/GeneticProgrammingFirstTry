@@ -16,9 +16,10 @@ class Ecosystem():
 	def __init__(self, population_exponential, testcases):
 		self.population = [Organism("1")]
 		self.testcases = testcases
+		self.scalar = len(self.testcases)
 		for i in range(population_exponential):
 			self.mutate()
-		self.testcases = testcases
+		self.win = None
 
 	def mutate(self):
 		print "Mutate"
@@ -77,7 +78,6 @@ class Ecosystem():
 		errors = 0
 		newpop = self.population
 		for i in newpop:
-			#print i.lispish,",", i.fitness
 			if i.fitness == "e":
 				try:
 					self.population.remove(i)
@@ -95,7 +95,11 @@ class Ecosystem():
 			try:
 				for j in self.testcases:
 					self.population[i].fitness += abs(lispish.interpret_block(self.population[i].lispish, {"x":j[0]}) - j[1])
-				self.population[i].fitness += 4*len(self.population[i].lispish)
+				self.population[i].fitness += self.scalar*len(self.population[i].lispish)
+				if self.win == None:
+					self.win = self.population[i]
+				elif self.population[i].fitness < self.win.fitness:
+					self.win = self.population[i]
 			except Exception, e:
 				self.population[i].fitness = "e"
 
@@ -123,21 +127,12 @@ class Organism():
 		self.fitness = 0
 
 if __name__ == "__main__":
-	a = Ecosystem(0, [[1,1], [2,4], [3,9], [4,16], [5,25]])
-	print [x.lispish for x in a.population]
-	for k in range(0,4):
-		print "\n\n"
-		a.mutate()
-		for x in a.population:
-			print x.lispish
-	print "\n\n"
+	a = Ecosystem(5, [[1,1], [2,4], [3,9], [4,16], [5,25]])
 	while 1:
 		try:
 			a.reap()
 			a.mutate()
-			print "Average:",sum([x.fitness for x in a.population])/len(a.population)
+			print "Winning:",a.win.lispish
 		except KeyboardInterrupt:
-			for i in a.population:
-				print i.lispish
-			
+			print a.win.lispish
 			exit()
