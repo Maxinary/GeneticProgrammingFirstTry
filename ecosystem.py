@@ -16,12 +16,14 @@ class Ecosystem():
 	def __init__(self, population_exponential, testcases):
 		self.population = [Organism("1")]
 		self.testcases = testcases
+		self.iterations = 0
+		self.win = None
 		for i in range(population_exponential):
 			self.mutate()
-		self.win = None
+
 
 	def mutate(self):
-		print "Mutate"
+		self.iterations += 1
 		#mutates each of best, in duplicte
 		''' 
 		possible mutations:
@@ -132,13 +134,14 @@ class Organism():
 		self.fitness = 0
 
 if __name__ == "__main__":
-	a = Ecosystem(5, [[1,2], [2,4], [3,6], [4,8], [5,10]])
+	a = Ecosystem(6, [[x,(x/2)**2] for x in range(0,10)])
 	while 1:
 		try:
 			a.reap()
 			a.mutate()
 			print "Winning:",a.win.lispish
-			print "Winning:",a.win.fitness
+			print "Fitness:",a.win.fitness
+			print "Iterations:",a.iterations
 		except KeyboardInterrupt:
-			print a.win.lispish
+			print "\n","Iterations:",a.iterations
 			exit()
