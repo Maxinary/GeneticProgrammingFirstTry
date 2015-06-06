@@ -139,14 +139,17 @@ class Organism():
 		self.fitness = 0
 
 if __name__ == "__main__":
-	a = Ecosystem(6, [[x,(x-2)**2] for x in range(0,10)])
+	a = Ecosystem(6, [[x,(float(x)+3)/2] for x in range(0,10)])
 	try:
+		answer = None
 		while 1:
 			a.reap()
 			a.mutate()
-			print "Winning:",a.win.lispish
-			print "Fitness:",a.win.fitness
-			print "Iterations:",a.iterations
+			if a.win != answer:
+				print "Winning:",a.win.lispish
+				print "Fitness:",a.win.fitness
+				print "Iterations:",a.iterations
+				answer = a.win
 	except KeyboardInterrupt:
 		try:
 			xvals = [x[0] for x in a.testcases]
@@ -155,3 +158,4 @@ if __name__ == "__main__":
 			show()
 		except Exception, e:
 			print "\nCould not display graph"
+			print "Iterations:",a.iterations
