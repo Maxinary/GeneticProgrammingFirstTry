@@ -1,4 +1,10 @@
 from math import log
+from random import randint
+
+operands = ['+', '*', '/', '^']
+
+def random_operand():
+	return operands[randint(0,len(operands)-1)]
 
 def interpret_block(simple_lisp, variables = {}):
 	'''interprets one branch of very simple lisp variation I made
@@ -26,7 +32,7 @@ def interpret_block(simple_lisp, variables = {}):
 		m = interpret_block(m)
 		n = interpret_block(n)
 
-		if simple_lisp[1] in ['+', '*', '/', '^', 'l']:
+		if simple_lisp[1] in ['+', '*', '/', '^']:
 			if simple_lisp[1]== '+':
 				return m + n
 			elif simple_lisp[1]== '*':
@@ -35,8 +41,6 @@ def interpret_block(simple_lisp, variables = {}):
 				return m / n
 			elif simple_lisp[1]== '^':
 				return m ** n
-			elif simple_lisp[1]== 'l':
-				return log(m, n)
 		else:
 			return "Err:Operand"
 	return "Err:Unbalanced Parentheses"
