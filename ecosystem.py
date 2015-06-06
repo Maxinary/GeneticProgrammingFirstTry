@@ -16,7 +16,6 @@ class Ecosystem():
 	def __init__(self, population_exponential, testcases):
 		self.population = [Organism("1")]
 		self.testcases = testcases
-		self.scalar = len(self.testcases)
 		for i in range(population_exponential):
 			self.mutate()
 		self.win = None
@@ -95,11 +94,17 @@ class Ecosystem():
 			try:
 				for j in self.testcases:
 					self.population[i].fitness += abs(lispish.interpret_block(self.population[i].lispish, {"x":j[0]}) - j[1])
-				self.population[i].fitness += self.scalar*len(self.population[i].lispish)
+
+
 				if self.win == None:
 					self.win = self.population[i]
-				elif self.population[i].fitness < self.win.fitness:
-					self.win = self.population[i]
+
+				elif self.population[i].fitness <= self.win.fitness:
+					if len(self.population[i].lispish) < len(self.win.lispish):
+						self.win = self.population[i]
+					if self.population[i].fitness < self.win.fitness:
+						self.win = self.population[i]
+
 			except Exception, e:
 				self.population[i].fitness = "e"
 
@@ -127,12 +132,13 @@ class Organism():
 		self.fitness = 0
 
 if __name__ == "__main__":
-	a = Ecosystem(5, [[1,1], [2,4], [3,9], [4,16], [5,25]])
+	a = Ecosystem(5, [[1,2], [2,4], [3,6], [4,8], [5,10]])
 	while 1:
 		try:
 			a.reap()
 			a.mutate()
 			print "Winning:",a.win.lispish
+			print "Winning:",a.win.fitness
 		except KeyboardInterrupt:
 			print a.win.lispish
 			exit()
