@@ -2,9 +2,13 @@ import lispish
 import re
 from random import randint, choice
 from sys import exit
-import matplotlib.pyplot as plt
-import numpy as np
-
+from os import environ
+try:
+	if environ["DISPLAY"] is not None:
+		from matplotlib.pyplot import plot,show
+		import numpy as np
+except KeyError:
+	pass
 def find_nth_char(haystack, needle, n):
 	count = 0
 	for i in range(len(haystack)):
@@ -148,7 +152,7 @@ if __name__ == "__main__":
 		try:
 			xvals = [x[0] for x in a.testcases]
 			yvals = [x[1] for x in a.testcases]
-			plt.plot(xvals, [lispish.interpret_block(a.win.lispish, {"x":i}) for i in xvals], 'b', xvals, yvals, "g^")
-			plt.show()
+			plot(xvals, [lispish.interpret_block(a.win.lispish, {"x":i}) for i in xvals], 'b', xvals, yvals, "g^")
+			show()
 		except Exception, e:
 			print "\nCould not display graph"
