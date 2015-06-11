@@ -1,6 +1,6 @@
 import lispish
 import re
-from random import randint, choice
+from random import getrandbits, randint, choice
 from sys import exit
 from os import environ
 import math
@@ -65,14 +65,14 @@ class Ecosystem():
 					change.replace(block,newblock)
 				elif decision == 1:
 					#removes branch
-					chosen_one = randint(0,1)
+					chosen_one = getrandbits(1)
 					change = change.replace(block, [m,n][chosen_one], 1)
 				elif decision == 2:
 					change = self.create_branch(change,choice([m,n]))
 				else:
 					change = self.alter_num(change)
 			else:
-				decision = randint(0,1)
+				decision = getrandbits(1)
 				if decision == 0:
 					change = self.create_branch(change, change)
 				else:
@@ -119,9 +119,9 @@ class Ecosystem():
 
 	def create_branch(self, full, inblock):
 		#creates branch
-		varia = randint(0,1)
+		varia = getrandbits(1)
 		if varia == 0:
-			full = full.replace(inblock,"("+lispish.random_operand()+" "+inblock+" "+str(randint(-5,5))+")",1)
+			full = full.replace(inblock,"("+lispish.random_operand()+" "+inblock+" "+str(getrandbits(4)-8)+")",1)
 		else:
 			full = full.replace(inblock,"("+lispish.random_operand()+" "+inblock+" x)",1)
 		return full
@@ -130,7 +130,7 @@ class Ecosystem():
 		#changes number
 		nums = re.findall("-?\d+",full)
 		chosen = choice(nums+["0"])
-		new = str(int(chosen)+randint(-5,5))
+		new = str(int(chosen)+getrandbits(4)-8)
 		full = full.replace(chosen,new,1)
 		full = re.sub("-+", "-", full)
 		return full
