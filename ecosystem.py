@@ -3,9 +3,11 @@ import re
 from random import randint, choice
 from sys import exit
 from os import environ
+import math
 try:
 	if environ["DISPLAY"] is not None:
-		from matplotlib.pyplot import plot,show
+		from matplotlib.pyplot import plot,show,clf,draw
+		hl, = plot([],[])
 except KeyError:
 	pass
 def find_nth_char(haystack, needle, n):
@@ -66,7 +68,7 @@ class Ecosystem():
 					chosen_one = randint(0,1)
 					change = change.replace(block, [m,n][chosen_one], 1)
 				elif decision == 2:
-					change = self.create_branch(change,block)
+					change = self.create_branch(change,choice([m,n]))
 				else:
 					change = self.alter_num(change)
 			else:
@@ -138,8 +140,14 @@ class Organism():
 		self.lispish = lispish
 		self.fitness = 0
 
+def re_draw_plot():
+	xvals = [x[0] for x in a.testcases]
+	hl.set_xdata(xvals)
+	hl.set_ydata([lispish.interpret_block(a.win.lispish, {"x":i}) for i in xvals])
+	draw()
+
 if __name__ == "__main__":
-	a = Ecosystem(6, [[x,(float(x)+3)/2] for x in range(0,10)])
+	a = Ecosystem(3, [[x,(x+3)*(x+4)] for x in range(1,100)])
 	try:
 		answer = None
 		while 1:
@@ -150,8 +158,13 @@ if __name__ == "__main__":
 				print "Fitness:",a.win.fitness
 				print "Iterations:",a.iterations
 				answer = a.win
+				try:
+					re_draw_plot()
+				except Exception, e:
+					pass
 	except KeyboardInterrupt:
 		try:
+
 			xvals = [x[0] for x in a.testcases]
 			yvals = [x[1] for x in a.testcases]
 			plot(xvals, [lispish.interpret_block(a.win.lispish, {"x":i}) for i in xvals], 'b', xvals, yvals, "g^")
