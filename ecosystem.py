@@ -108,11 +108,12 @@ class Ecosystem():
 				if self.win == None:
 					self.win = self.population[i]
 
-				elif self.population[i].fitness <= self.win.fitness:
-					if len(self.population[i].lispish) < len(self.win.lispish):
-						self.win = self.population[i]
-					if self.population[i].fitness < self.win.fitness:
-						self.win = self.population[i]
+				if self.population[i].fitness < self.win.fitness:
+					self.win = self.population[i]
+
+				if len(self.population[i].lispish) < len(self.win.lispish):
+					if self.win.fitness == self.population[i].fitness:
+						self.win = self.population[i]					
 
 			except Exception, e:
 				self.population[i].fitness = "e"
