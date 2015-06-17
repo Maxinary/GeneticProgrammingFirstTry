@@ -1,4 +1,4 @@
-# Genetic Programming Firs Try
+# Genetic Programming First Try
 Having no knowledge of the way genetic programs are written, I am setting out to write one which calculates the regression of a set of points
 #What I know
 I understand the basic concepts of genetic programming--you kill the least fit in a population then, to create more diversity, mutate the population. Other than that, I have never read a genetic program or a genetic programming guide.
