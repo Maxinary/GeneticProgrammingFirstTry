@@ -28,6 +28,18 @@ class Ecosystem():
 		for i in range(population_exponential):
 			self.mutate()
 
+	def cross(self):
+		'''
+			
+		'''
+		newpopulation = self.population
+		looper = self.population
+		for i in range(len(looper)):
+			b1 = choice(looper[i].random_block())
+			b2 = choice(looper[(i+1)%len(self.population)].random_block())
+			new_org = looper[i].lispish.replace(b1,b2)
+			newpopulation.append(Organism(new_org))
+		population = newpopulation
 
 	def mutate(self):
 		self.iterations += 1
@@ -47,22 +59,15 @@ class Ecosystem():
 		looper = self.population
 		for i in range(len(looper)):
 			change = looper[i].lispish
-			node_to_change = find_nth_char(change, "(", randint(0,change.count("(")))
-			if node_to_change != -1 and change.count("(") >0:
-				index = lispish.get_end_of_block(change[node_to_change:])
-				block = change[node_to_change:index+node_to_change+1]
-
-				end_m = lispish.get_end_of_block(block[3:])
-				m = block[3:end_m+4]
-				n = block[end_m+5:-1]
-
+			block, m, n = looper[i].random_block()
+			if block != change:
 				decision = randint(0,2)
 
 				if decision == 0:
 					#changes operand
 					newblock = block
-					newblock = newblock[:1]+lispish.random_operand()+newblock[3:]
-					change.replace(block,newblock)
+					newblock = newblock[:1]+lispish.random_operand()+newblock[2:]
+					change = change.replace(block,newblock)
 				elif decision == 1:
 					#removes branch
 					chosen_one = getrandbits(1)
@@ -130,8 +135,10 @@ class Ecosystem():
 	def alter_num(self,full):
 		#changes number
 		nums = re.findall("-?\d+",full)
-		chosen = choice(nums+["0"])
-		new = str(int(chosen)+getrandbits(4)-8)
+		if len(nums) == 0:
+			return full
+		chosen = choice(nums)
+		new = str(int(chosen)+randint(-8,8))
 		full = full.replace(chosen,new,1)
 		full = re.sub("-+", "-", full)
 		return full
@@ -140,6 +147,22 @@ class Organism():
 	def __init__(self, lispish):
 		self.lispish = lispish
 		self.fitness = 0
+		
+	def random_block(self):
+		change = self.lispish
+		node_to_change = find_nth_char(change, "(", randint(0,change.count("(")))
+		if node_to_change != -1 and change.count("(") >0:
+			index = lispish.get_end_of_block(change[node_to_change:])
+			block = change[node_to_change:index+node_to_change+1]
+
+			end_m = lispish.get_end_of_block(block[3:])
+			m = block[3:end_m+4]
+			n = block[end_m+5:-1]
+			rand_block = choice([m,n])
+			return block, m, n
+		else:
+			rand_block = change
+		return change, change, change
 
 def re_draw_plot():
 	xvals = [x[0] for x in a.testcases]
@@ -148,12 +171,14 @@ def re_draw_plot():
 	draw()
 
 if __name__ == "__main__":
-	a = Ecosystem(3, [[x,(x+3)*(x+4)] for x in range(1,100)])
+	a = Ecosystem(3, [[x,(x+3)**3] for x in range(1,10)])
 	try:
 		answer = None
 		while 1:
 			a.reap()
 			a.mutate()
+			a.cross()
+			a.reap()
 			if a.win != answer:
 				print "Winning:",a.win.lispish
 				print "Fitness:",a.win.fitness
