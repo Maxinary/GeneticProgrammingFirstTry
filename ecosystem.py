@@ -1,7 +1,6 @@
 import lispish
 import re
 from random import getrandbits, randint, choice
-from sys import exit
 from os import environ
 import math
 try:
